@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CartItemRequest {
 
-    @NotNull(message = "El product_id es obligatorio")
-    private Integer product_id;
+    @NotNull(message = "El productId es obligatorio")
+    private Integer productId;
 
     @NotNull(message = "La cantidad (quantity) es obligatoria")
     @Min(value = 1, message = "La cantidad mínima debe ser 1")

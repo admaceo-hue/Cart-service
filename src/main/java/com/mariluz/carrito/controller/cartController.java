@@ -1,5 +1,10 @@
 package com.mariluz.carrito.controller;
 
+import com.mariluz.carrito.dto.ActProductoCantRequest;
+import com.mariluz.carrito.dto.CartItemRequest;
+import com.mariluz.carrito.dto.CartResponse;
+import com.mariluz.carrito.service.CartService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,43 +14,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mariluz.carrito.dto.CartItemRequest;
-import com.mariluz.carrito.dto.CartResponse;
-import com.mariluz.carrito.service.CartService;
-
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/cart")
 public class cartController {
+
     @Autowired
     private CartService cartService;
 
     // End point para agregar un producto al carrito
-    @PostMapping("/agregar/{userId}")
+    @PostMapping("/agregar")
     public CartResponse agregarProducto(
-            @PathVariable Integer userId,
-            @Valid @RequestBody CartItemRequest request
+        @Valid @RequestBody CartItemRequest request
     ) {
-        return cartService.agregarProducto(userId, request);
+        return cartService.agregarProducto(request);
     }
 
     // End point para eliminar un producto del carrito
-    @DeleteMapping("/eliminar/{userId}/{productId}")
-    public CartResponse eliminarProducto(
-            @PathVariable Integer userId,
-            @PathVariable Integer productId
-    ) {
-        return cartService.eliminarProducto(userId, productId);
+    @DeleteMapping("/eliminar/{productId}")
+    public CartResponse eliminarProducto(@PathVariable Integer productId) {
+        return cartService.eliminarProducto(productId);
     }
 
     // End point para actualizar la cantidad de un producto en el carrito
-    @PutMapping("/actualizar/{userId}/{productId}/{cantidad}")
+    @PutMapping("/actualizar")
     public CartResponse actualizarCantidad(
-            @PathVariable Integer userId,
-            @PathVariable Integer productId,
-            @PathVariable Integer cantidad
+        @Valid @RequestBody ActProductoCantRequest request
     ) {
-        return cartService.actualizarCantidad(userId, productId, cantidad);
+        return cartService.actualizarCantidad(request);
     }
 }
