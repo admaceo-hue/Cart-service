@@ -30,16 +30,15 @@ public class JwtUtil {
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(
-            jwtSecret.getBytes(StandardCharsets.UTF_8)
-        );
+                jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
     public Claims getAllClaims(String token) {
         return Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     public <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
@@ -62,10 +61,10 @@ public class JwtUtil {
         Claims claims = getAllClaims(token);
 
         return User.builder()
-            .id(claims.get("id", String.class))
-            .name(claims.getSubject())
-            .email(claims.get("email", String.class))
-            .role(claims.get("role", String.class))
-            .build();
+                .id(claims.get("id", String.class))
+                .name(claims.getSubject())
+                .email(claims.get("email", String.class))
+                .role(claims.get("role", String.class))
+                .build();
     }
 }
