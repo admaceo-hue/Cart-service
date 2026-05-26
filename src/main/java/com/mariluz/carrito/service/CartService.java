@@ -47,7 +47,8 @@ public class CartService {
         });
     }
 
-    @Transactional(readOnly = true)
+    
+    @Transactional
     public CartResponse obtenerCarritoUsuario() {
         Cart cart = obtenerOCrearCarrito();
         return obtenerCartResponse(cart);
