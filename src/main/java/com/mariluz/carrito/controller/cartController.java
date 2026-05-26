@@ -28,11 +28,13 @@ public class cartController {
     @PostMapping("/agregar")
     public ResponseEntity<CartResponse> agregarProducto(@Valid @RequestBody CartItemRequest request) {
         return ResponseEntity.ok(cartService.agregarProducto(request));
+        
     }
 
     @DeleteMapping("/eliminar/{productId}")
     public ResponseEntity<CartResponse> eliminarProducto(@PathVariable Integer productId) {
         return ResponseEntity.ok(cartService.eliminarProducto(productId));
+        
     }
 
     @PutMapping("/actualizar")
@@ -40,7 +42,7 @@ public class cartController {
         return ResponseEntity.ok(cartService.actualizarCantidad(request));
     }
 
-    @GetMapping
+    @GetMapping("/ver")
     public ResponseEntity<CartResponse> verCarrito() {
         return ResponseEntity.ok(cartService.obtenerCarritoUsuario());
     }

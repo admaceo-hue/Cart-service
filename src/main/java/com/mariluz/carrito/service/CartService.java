@@ -12,8 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mariluz.carrito.dto.ActProductoCantRequest;
 import com.mariluz.carrito.dto.CartItemRequest;
 import com.mariluz.carrito.dto.CartResponse;
+import com.mariluz.carrito.exception.InvalidQuantityException;
 import com.mariluz.carrito.exception.ResourceNotFoundException;
-import com.mariluz.carrito.exception.UnauthorizedOperationException;
+import com.mariluz.carrito.exception.UnauthorizedOperationException; 
 import com.mariluz.carrito.model.Cart;
 import com.mariluz.carrito.model.CartItem;
 import com.mariluz.carrito.model.User;
@@ -36,6 +37,7 @@ public class CartService {
         }
         return user;
     }
+
     // Obtiene el carrito del usuario autenticado o crea uno nuevo si no existe.
     private Cart obtenerOCrearCarrito() {
         User user = getCurrentUser();
@@ -52,9 +54,13 @@ public class CartService {
     }
 
     // Agrega un producto al carrito del usuario. Si el producto ya existe, incrementa la cantidad.
-
     @Transactional
     public CartResponse agregarProducto(CartItemRequest request) {
+        
+        if (request.getQuantity() == null || request.getQuantity() < 1) {
+            throw new InvalidQuantityException("La cantidad para agregar al carrito debe ser mayor o igual a 1");
+        }
+
         Cart cart = obtenerOCrearCarrito();
 
         List<CartItem> itemsDelCarrito = cartItemRepository.buscarPorCartId(cart.getId());
@@ -79,7 +85,6 @@ public class CartService {
     }
 
     // Elimina un producto específico del carrito del usuario.
-
     @Transactional
     public CartResponse eliminarProducto(Integer productId) {
         Cart cart = obtenerOCrearCarrito();
@@ -98,6 +103,11 @@ public class CartService {
     // Actualiza la cantidad de un producto ya presente en el carrito. 
     @Transactional
     public CartResponse actualizarCantidad(ActProductoCantRequest request) {
+        
+        if (request.getQuantity() == null || request.getQuantity() < 1) {
+            throw new InvalidQuantityException("La cantidad ingresada debe ser mayor o igual a 1");
+        }
+
         Cart cart = obtenerOCrearCarrito();
 
         List<CartItem> itemsDelCarrito = cartItemRepository.buscarPorCartId(cart.getId());
@@ -116,7 +126,6 @@ public class CartService {
     }
 
     // Método privado para construir un CartResponse 
-
     private CartResponse obtenerCartResponse(Cart cart) {
         List<CartItem> itemsDelCarrito = cartItemRepository.buscarPorCartId(cart.getId());
         
@@ -131,6 +140,4 @@ public class CartService {
                 .products(listaProductosDto)
                 .build();
     }
-
-  
 }
