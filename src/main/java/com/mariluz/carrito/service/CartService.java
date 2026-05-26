@@ -2,6 +2,7 @@ package com.mariluz.carrito.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mariluz.carrito.dto.ActProductoCantRequest;
 import com.mariluz.carrito.dto.CartItemRequest;
 import com.mariluz.carrito.dto.CartResponse;
-import com.mariluz.carrito.exception.InvalidQuantityException;
 import com.mariluz.carrito.exception.ResourceNotFoundException;
 import com.mariluz.carrito.exception.UnauthorizedOperationException;
 import com.mariluz.carrito.model.Cart;
@@ -29,7 +29,6 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
 
-    // Obtiene el usuario autenticado del contexto de seguridad
     private User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof User user)) {
@@ -38,7 +37,6 @@ public class CartService {
         return user;
     }
 
-    // Método auxiliar para obtener o crear el carrito de la cabecera
     private Cart obtenerOCrearCarrito() {
         User user = getCurrentUser();
         return cartRepository.findByUserId(user.getId()).orElseGet(() -> {
@@ -47,24 +45,14 @@ public class CartService {
         });
     }
 
-    //  TODO 3: METODO PARA VER EL CARRITO ACTUAL DO USUARIO
     @Transactional(readOnly = true)
     public CartResponse obtenerCarritoUsuario() {
         Cart cart = obtenerOCrearCarrito();
         return obtenerCartResponse(cart);
     }
 
-    // 1. AGREGAR UN PRODUCTO (Suma si ya existe)
     @Transactional
     public CartResponse agregarProducto(CartItemRequest request) {
-        //  TODO 1: Validaciones de negocio fundamentales
-        if (request.getProductId() == null) {
-            throw new InvalidQuantityException("El ID del producto es obligatorio");
-        }
-        if (request.getQuantity() == null || request.getQuantity() <= 0) {
-            throw new InvalidQuantityException("La cantidad a agregar debe ser mayor a cero");
-        }
-
         Cart cart = obtenerOCrearCarrito();
 
         List<CartItem> itemsDelCarrito = cartItemRepository.buscarPorCartId(cart.getId());
@@ -88,12 +76,10 @@ public class CartService {
         return obtenerCartResponse(cart);
     }
 
-    // 2. ELIMINAR UN PRODUCTO POR COMPLETO
     @Transactional
     public CartResponse eliminarProducto(Integer productId) {
         Cart cart = obtenerOCrearCarrito();
 
-        //  TODO 1 y 2: Validar si el producto de verdad existe en el carrito antes de borrar
         List<CartItem> itemsDelCarrito = cartItemRepository.buscarPorCartId(cart.getId());
         boolean existe = itemsDelCarrito.stream().anyMatch(i -> i.getProduct_id().equals(productId));
         
@@ -105,19 +91,12 @@ public class CartService {
         return obtenerCartResponse(cart);
     }
 
-    // 3. ACTUALIZAR LA CANTIDAD (REEMPLAZAR VALOR)
     @Transactional
     public CartResponse actualizarCantidad(ActProductoCantRequest request) {
-        //  TODO 1: Validar cantidad en la actualización
-        if (request.getQuantity() == null || request.getQuantity() <= 0) {
-            throw new InvalidQuantityException("La cantidad asignada debe ser mayor a cero. Si quieres quitarlo, usa eliminar.");
-        }
-
         Cart cart = obtenerOCrearCarrito();
 
         List<CartItem> itemsDelCarrito = cartItemRepository.buscarPorCartId(cart.getId());
 
-        //  TODO 2: Excepción personalizada en lugar de RuntimeException
         CartItem item = itemsDelCarrito.stream()
                 .filter(i -> i.getProduct_id().equals(request.getProductId()))
                 .findFirst()
@@ -131,13 +110,18 @@ public class CartService {
         return obtenerCartResponse(cart);
     }
 
-    // Método auxiliar para construir la respuesta
     private CartResponse obtenerCartResponse(Cart cart) {
         List<CartItem> itemsDelCarrito = cartItemRepository.buscarPorCartId(cart.getId());
+        
+        List<CartResponse.ProductItemDto> listaProductosDto = itemsDelCarrito.stream()
+                .map(item -> CartResponse.ProductItemDto.builder()
+                        .productId(item.getProduct_id())
+                        .quantity(item.getQuantity())
+                        .build())
+                .collect(Collectors.toList());
+
         return CartResponse.builder()
-                .id(cart.getId())
-                .user_id(cart.getUserId())
-                .items(itemsDelCarrito)
+                .products(listaProductosDto)
                 .build();
     }
 }

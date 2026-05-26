@@ -25,30 +25,23 @@ public class cartController {
     @Autowired
     private CartService cartService;
 
-    // End point para agregar un producto al carrito
     @PostMapping("/agregar")
-    public CartResponse agregarProducto(
-        @Valid @RequestBody CartItemRequest request
-    ) {
-        return cartService.agregarProducto(request);
+    public ResponseEntity<CartResponse> agregarProducto(@Valid @RequestBody CartItemRequest request) {
+        return ResponseEntity.ok(cartService.agregarProducto(request));
     }
 
-    // End point para eliminar un producto del carrito
     @DeleteMapping("/eliminar/{productId}")
-    public CartResponse eliminarProducto(@PathVariable Integer productId) {
-        return cartService.eliminarProducto(productId);
+    public ResponseEntity<CartResponse> eliminarProducto(@PathVariable Integer productId) {
+        return ResponseEntity.ok(cartService.eliminarProducto(productId));
     }
 
-    // End point para actualizar la cantidad de un producto en el carrito
     @PutMapping("/actualizar")
-    public CartResponse actualizarCantidad(
-        @Valid @RequestBody ActProductoCantRequest request
-    ) {
-        return cartService.actualizarCantidad(request);
+    public ResponseEntity<CartResponse> actualizarCantidad(@Valid @RequestBody ActProductoCantRequest request) {
+        return ResponseEntity.ok(cartService.actualizarCantidad(request));
     }
-    // En tu Controller mapea el método del TODO 3:
-@GetMapping
-public ResponseEntity<CartResponse> verCarrito() {
-    return ResponseEntity.ok(cartService.obtenerCarritoUsuario());
-}
+
+    @GetMapping
+    public ResponseEntity<CartResponse> verCarrito() {
+        return ResponseEntity.ok(cartService.obtenerCarritoUsuario());
+    }
 }
