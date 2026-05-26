@@ -36,7 +36,7 @@ public class CartService {
         }
         return user;
     }
-
+    // Obtiene el carrito del usuario autenticado o crea uno nuevo si no existe.
     private Cart obtenerOCrearCarrito() {
         User user = getCurrentUser();
         return cartRepository.findByUserId(user.getId()).orElseGet(() -> {
@@ -50,6 +50,8 @@ public class CartService {
         Cart cart = obtenerOCrearCarrito();
         return obtenerCartResponse(cart);
     }
+
+    // Agrega un producto al carrito del usuario. Si el producto ya existe, incrementa la cantidad.
 
     @Transactional
     public CartResponse agregarProducto(CartItemRequest request) {
@@ -76,6 +78,8 @@ public class CartService {
         return obtenerCartResponse(cart);
     }
 
+    // Elimina un producto específico del carrito del usuario.
+
     @Transactional
     public CartResponse eliminarProducto(Integer productId) {
         Cart cart = obtenerOCrearCarrito();
@@ -91,6 +95,7 @@ public class CartService {
         return obtenerCartResponse(cart);
     }
 
+    // Actualiza la cantidad de un producto ya presente en el carrito. 
     @Transactional
     public CartResponse actualizarCantidad(ActProductoCantRequest request) {
         Cart cart = obtenerOCrearCarrito();
@@ -110,6 +115,8 @@ public class CartService {
         return obtenerCartResponse(cart);
     }
 
+    // Método privado para construir un CartResponse 
+
     private CartResponse obtenerCartResponse(Cart cart) {
         List<CartItem> itemsDelCarrito = cartItemRepository.buscarPorCartId(cart.getId());
         
@@ -124,4 +131,6 @@ public class CartService {
                 .products(listaProductosDto)
                 .build();
     }
+
+  
 }
