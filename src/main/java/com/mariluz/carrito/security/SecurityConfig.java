@@ -8,7 +8,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.mariluz.carrito.exception.CustomAuthenticationEntryPoint; // <-- IMPORTAMOS TU NUEVA EXCEPCIÓN
+import com.mariluz.carrito.exception.CustomAuthenticationEntryPoint; 
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint; // <-- INYECTAMOS EL MANEJADOR
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint; 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)

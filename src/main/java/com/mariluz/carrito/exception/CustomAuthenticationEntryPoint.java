@@ -23,7 +23,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
-        // Construimos el JSON a mano como un String puro usando bloques de texto (Java 15+)
+        
         String jsonRespuesta = """
             {
                 "timestamp": "%s",
@@ -33,7 +33,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
             }
             """.formatted(LocalDateTime.now().toString(), HttpStatus.UNAUTHORIZED.value());
 
-        // Lo enviamos directo al cliente
+        
         response.getWriter().write(jsonRespuesta);
     }
 }
