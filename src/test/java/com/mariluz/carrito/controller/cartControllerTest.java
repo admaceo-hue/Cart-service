@@ -44,7 +44,7 @@ public class cartControllerTest {
         return CartResponse.builder()
             .products(java.util.List.of(
                 CartResponse.ProductItemDto.builder()
-                    .productId(1)
+                    .id(1)
                     .quantity(2)
                     .build()
             ))

@@ -20,7 +20,7 @@ public class CartResponse {
     @AllArgsConstructor
     @Builder
     public static class ProductItemDto {
-        private Integer productId;
+        private Integer id;
         private Integer quantity;
     }
 }

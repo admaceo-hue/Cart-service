@@ -132,7 +132,7 @@ public class CartService {
         
         List<CartResponse.ProductItemDto> listaProductosDto = itemsDelCarrito.stream()
                 .map(item -> CartResponse.ProductItemDto.builder()
-                        .productId(item.getProduct_id())
+                        .id(item.getProduct_id())
                         .quantity(item.getQuantity())
                         .build())
                 .collect(Collectors.toList());
