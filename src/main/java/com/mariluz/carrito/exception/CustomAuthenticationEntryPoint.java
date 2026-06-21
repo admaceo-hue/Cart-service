@@ -1,0 +1,39 @@
+package com.mariluz.carrito.exception;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@Component
+public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+                         AuthenticationException authException) throws IOException, ServletException {
+        
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+        
+        String jsonRespuesta = """
+            {
+                "timestamp": "%s",
+                "status": %d,
+                "error": "No Autorizado",
+                "message": "Acceso denegado: Debes iniciar sesión antes de realizar esta operación."
+            }
+            """.formatted(LocalDateTime.now().toString(), HttpStatus.UNAUTHORIZED.value());
+
+        
+        response.getWriter().write(jsonRespuesta);
+    }
+}
