@@ -20,11 +20,11 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("API Servicio Carrito")
-                        .version("v1")
+                        .version("1.0")
                         .description("Microservicio de carrito - Tienda Mariluz")
                         .contact(new Contact()
-                                .name(" Maria luz")
-                                .email("contacto@mariluz.cl")))
+                                .name("Adonys Maceo")
+                                .email("ad.maceo@duocuc.cl")))
                 // hace que aparezca el candado y se envie el token en cada request
                 .addSecurityItem(new SecurityRequirement().addList(SCHEME))
                 .components(
